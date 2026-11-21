@@ -19,7 +19,7 @@ public class FormController {
     private ComboBox<String> kategoriBox;
     @FXML
     private Label pesanLabel;
-
+    private Produk produkDiedit;
     private Navigator navigator;
     private DataProduk data;
 
@@ -33,16 +33,39 @@ public class FormController {
         this.navigator = navigator;
         this.data = data;
     }
+    
+    public void setKonteks(Navigator navigator, DataProduk data, Produk produk) {
+        this.navigator = navigator;
+        this.data = data;
+        this.produkDiedit = produk;
+
+        namaField.setText(produk.getNama());
+        hargaField.setText(String.valueOf(produk.getHarga()));
+        kategoriBox.setValue(produk.getKategori());
+    }
+
 
     @FXML
     private void simpan() {
         try {
             long harga = Long.parseLong(hargaField.getText().trim());
-            Produk produk = data.tambah(
-                    namaField.getText(),
-                    kategoriBox.getValue(),
-                    harga
-            );
+
+            Produk produk;
+            if (produkDiedit == null) {
+                produk = data.tambah(
+                        namaField.getText(),
+                        kategoriBox.getValue(),
+                        harga
+                );
+            } else {
+                produk = data.ubah(
+                        produkDiedit.getKode(),
+                        namaField.getText(),
+                        kategoriBox.getValue(),
+                        harga
+                );
+            }
+
             navigator.bukaDetail(produk);
         } catch (NumberFormatException e) {
             pesanLabel.setText("Harga harus berupa bilangan bulat.");
