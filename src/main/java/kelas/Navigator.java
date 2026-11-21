@@ -49,6 +49,14 @@ public class Navigator {
         c.setKonteks(this, data);
         tampil(root);
     }
+    
+    public void bukaForm(Produk produk) throws IOException {
+        FXMLLoader l = loader("form");
+        Parent root = l.load();
+        FormController c = l.getController();
+        c.setKonteks(this, data, produk);
+        tampil(root);
+    }
 
     public void bukaDetail(Produk produk) throws IOException {
         FXMLLoader l = loader("detail");
