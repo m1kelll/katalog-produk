@@ -1,37 +1,40 @@
-<?xml version="1.0" encoding="UTF-8"?>
+package kelas.data;
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.VBox?>
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import kelas.model.Produk;
 
-<BorderPane stylesheets="@styles/app.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kelas.controller.DaftarController">
-    <top>
-        <VBox spacing="12" styleClass="header">
-            <Label styleClass="title" text="Daftar Produk" />
-            <TextField fx:id="cariField" onAction="#cari" promptText="Cari nama produk" />
-            <FlowPane hgap="10" vgap="8">
-                <Button onAction="#cari" text="Cari" />
-                <Button onAction="#tambah" styleClass="button-primary" text="Tambah" />
-                <Button onAction="#detail" text="Lihat Detail" />
-            </FlowPane>
-        </VBox>
-    </top>
-    <center>
-        <TableView fx:id="tabel">
-            <columns>
-                <TableColumn fx:id="kodeCol" prefWidth="100" text="Kode" />
-                <TableColumn fx:id="namaCol" prefWidth="230" text="Nama" />
-                <TableColumn fx:id="jenisCol" prefWidth="150" text="Kategori" />
-                <TableColumn fx:id="hargaCol" prefWidth="152.0" text="Harga (Rp)" />
-            </columns>
-        </TableView>
-    </center>
-    <bottom>
-        <Label fx:id="pesanLabel" styleClass="error" wrapText="true" />
-    </bottom>
-</BorderPane>
+public class DataProduk {
+
+    private final ObservableList<Produk> daftar =
+            FXCollections.observableArrayList();
+    private int urutan = 1;
+
+    public ObservableList<Produk> getDaftar() {
+        return FXCollections.unmodifiableObservableList(daftar);
+    }
+
+    public Produk tambah(String nama, String kategori, long harga) {
+        String kode = String.format("PR%03d", urutan);
+        Produk produk = new Produk(kode, nama, kategori, harga);
+        daftar.add(produk);
+        urutan++;
+        return produk;
+    }
+    
+    public Produk ubah(String kode, String nama, String kategori, long harga) {
+        for (int i = 0; i < daftar.size(); i++) {
+            if (daftar.get(i).getKode().equals(kode)) {
+                Produk produkBaru = new Produk(kode, nama, kategori, harga);
+                daftar.set(i, produkBaru);
+                return produkBaru;
+            }
+        }
+        throw new IllegalArgumentException("Produk tidak ditemukan.");
+    }
+    
+    public boolean hapus(String kode) {
+        return daftar.removeIf(produk -> produk.getKode().equals(kode));
+    }
+}
+
