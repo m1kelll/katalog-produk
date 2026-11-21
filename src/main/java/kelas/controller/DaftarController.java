@@ -13,6 +13,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import kelas.Navigator;
 import kelas.data.DataProduk;
 import kelas.model.Produk;
+import java.util.Optional;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 public class DaftarController {
 
@@ -100,6 +103,45 @@ public class DaftarController {
         } catch (IOException e) {
             pesanLabel.setText("Detail gagal dibuka.");
             e.printStackTrace();
+        }
+    }
+    
+    @FXML
+    private void edit() {
+        Produk produk = tabel.getSelectionModel().getSelectedItem();
+
+        if (produk == null) {
+            pesanLabel.setText("Pilih satu produk dahulu.");
+            return;
+        }
+
+        try {
+            navigator.bukaForm(produk);
+        } catch (IOException e) {
+            pesanLabel.setText("Form edit gagal dibuka.");
+            e.printStackTrace();
+        }
+    }
+    
+    @FXML
+    private void hapus() {
+        Produk produk = tabel.getSelectionModel().getSelectedItem();
+
+        if (produk == null) {
+            pesanLabel.setText("Pilih satu produk dahulu.");
+            return;
+        }
+
+        Alert konfirmasi = new Alert(Alert.AlertType.CONFIRMATION);
+        konfirmasi.setTitle("Hapus Produk");
+        konfirmasi.setHeaderText("Hapus " + produk.getNama() + "?");
+        konfirmasi.setContentText("Produk yang dihapus tidak dapat dikembalikan.");
+
+        Optional<ButtonType> hasil = konfirmasi.showAndWait();
+        if (hasil.isPresent() && hasil.get() == ButtonType.OK) {
+            data.hapus(produk.getKode());
+            cari();
+            pesanLabel.setText("Produk berhasil dihapus.");
         }
     }
 }
