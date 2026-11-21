@@ -21,4 +21,20 @@ public class DataProduk {
         urutan++;
         return produk;
     }
+    
+    public Produk ubah(String kode, String nama, String kategori, long harga) {
+        for (int i = 0; i < daftar.size(); i++) {
+            if (daftar.get(i).getKode().equals(kode)) {
+                Produk produkBaru = new Produk(kode, nama, kategori, harga);
+                daftar.set(i, produkBaru);
+                return produkBaru;
+            }
+        }
+        throw new IllegalArgumentException("Produk tidak ditemukan.");
+    }
+    
+    public boolean hapus(String kode) {
+        return daftar.removeIf(produk -> produk.getKode().equals(kode));
+    }
 }
+
